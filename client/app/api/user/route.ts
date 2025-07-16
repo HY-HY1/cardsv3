@@ -3,6 +3,8 @@ import { User } from "@/lib/models/User";
 import { verifyToken } from "@/utils/jwt/auth";
 import { error } from "console";
 import { getUserByEmail } from "@/utils/cache/userCache";
+import { ServerErrorHandler } from "@/utils/errors/ServerError";
+import { MongoConnect } from "@/lib/mongo/MongoConnect";
 
 export async function GET(res:  Response) {
     try {
@@ -11,6 +13,8 @@ export async function GET(res:  Response) {
         if(!token) {
             return NextResponse.json({ error: "No token Provided"}, {status: 400 })
         }
+
+        await MongoConnect()
 
         const verifiedToken = verifyToken(token)
 
@@ -24,9 +28,17 @@ export async function GET(res:  Response) {
 
 
     } catch (err: unknown) {
-        return NextResponse.json(
-            { error: "There was an error"},
-            { status: 500}
-        )
+        console.log(err)
+
+        return ServerErrorHandler(err)
+    }
+}
+
+export async function DELETE(res: Response) {
+    try {
+
+    } catch (err:unknown) {
+        console.log(err)
+        return ServerErrorHandler(err)
     }
 }
