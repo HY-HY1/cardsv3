@@ -36,17 +36,7 @@ export async function POST(req: Request) {
 
     const token = signToken(jwtPayload);
 
-    const response = NextResponse.redirect(new URL("/app", req.url));
-
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60 * 24, 
-      sameSite: "lax",
-    });
-
-    return response;
+    return NextResponse.json({token : token}, { status: 200})
   } catch (err: unknown) {
     console.error("Login error:", err);
     return NextResponse.json({ error: "Something went wrong during login" }, { status: 500 });
